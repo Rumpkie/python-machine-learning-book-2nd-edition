@@ -37,8 +37,6 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 
-
-
 if LooseVersion(sklearn_version) < LooseVersion('0.18'):
     raise ValueError('Please use scikit-learn 0.18 or newer')
 
@@ -73,7 +71,6 @@ if LooseVersion(sklearn_version) < LooseVersion('0.18'):
 
 
 
-
 # # Choosing a classification algorithm
 
 # ...
@@ -84,8 +81,8 @@ if LooseVersion(sklearn_version) < LooseVersion('0.18'):
 
 
 
-
 iris = datasets.load_iris()
+#print (iris)
 X = iris.data[:, [2, 3]]
 y = iris.target
 
@@ -96,10 +93,8 @@ print('Class labels:', np.unique(y))
 
 
 
-
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=1, stratify=y)
-
 
 
 
@@ -109,7 +104,6 @@ print('Labels counts in y_test:', np.bincount(y_test))
 
 
 # Standardizing the features:
-
 
 
 
@@ -126,8 +120,7 @@ X_test_std = sc.transform(X_test)
 
 
 
-
-ppn = Perceptron(n_iter=40, eta0=0.1, random_state=1)
+ppn = Perceptron(max_iter=40, eta0=0.1, random_state=1)
 ppn.fit(X_train_std, y_train)
 
 
@@ -136,10 +129,8 @@ ppn.fit(X_train_std, y_train)
 # - You can replace `Perceptron(n_iter, ...)` by `Perceptron(max_iter, ...)` in scikit-learn >= 0.19. The `n_iter` parameter is used here deriberately, because some people still use scikit-learn 0.18.
 
 
-
 y_pred = ppn.predict(X_test_std)
 print('Misclassified samples: %d' % (y_test != y_pred).sum())
-
 
 
 
@@ -148,9 +139,7 @@ print('Accuracy: %.2f' % accuracy_score(y_test, y_pred))
 
 
 
-
 print('Accuracy: %.2f' % ppn.score(X_test_std, y_test))
-
 
 
 
@@ -202,7 +191,6 @@ def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
 # Training a perceptron model using the standardized training data:
 
 
-
 X_combined_std = np.vstack((X_train_std, X_test_std))
 y_combined = np.hstack((y_train, y_test))
 
@@ -223,7 +211,6 @@ plt.show()
 # ...
 
 # ### Logistic regression intuition and conditional probabilities
-
 
 
 
@@ -254,9 +241,7 @@ plt.show()
 
 
 
-
 # ### Learning the weights of the logistic cost function
-
 
 
 def cost_1(z):
@@ -283,7 +268,6 @@ plt.legend(loc='best')
 plt.tight_layout()
 #plt.savefig('images/03_04.png', dpi=300)
 plt.show()
-
 
 
 
@@ -364,7 +348,6 @@ class LogisticRegressionGD(object):
 
 
 
-
 X_train_01_subset = X_train[(y_train == 0) | (y_train == 1)]
 y_train_01_subset = y_train[(y_train == 0) | (y_train == 1)]
 
@@ -389,7 +372,6 @@ plt.show()
 
 
 
-
 lr = LogisticRegression(C=100.0, random_state=1)
 lr.fit(X_train_std, y_train)
 
@@ -404,9 +386,7 @@ plt.show()
 
 
 
-
 lr.predict_proba(X_test_std[:3, :])
-
 
 
 
@@ -414,14 +394,11 @@ lr.predict_proba(X_test_std[:3, :]).sum(axis=1)
 
 
 
-
 lr.predict_proba(X_test_std[:3, :]).argmax(axis=1)
 
 
 
-
 lr.predict(X_test_std[:3, :])
-
 
 
 
@@ -430,8 +407,6 @@ lr.predict(X_test_std[0, :].reshape(1, -1))
 
 
 # ### Tackling overfitting via regularization
-
-
 
 
 
@@ -463,14 +438,11 @@ plt.show()
 
 
 
-
 # ## Maximum margin intuition
 
 # ...
 
 # ## Dealing with the nonlinearly separable case using slack variables
-
-
 
 
 
@@ -496,7 +468,6 @@ plt.show()
 
 
 
-
 ppn = SGDClassifier(loss='perceptron', n_iter=1000)
 lr = SGDClassifier(loss='log', n_iter=1000)
 svm = SGDClassifier(loss='hinge', n_iter=1000)
@@ -508,7 +479,6 @@ svm = SGDClassifier(loss='hinge', n_iter=1000)
 
 
 # # Solving non-linear problems using a kernel SVM
-
 
 
 
@@ -540,9 +510,7 @@ plt.show()
 
 
 
-
 # ## Using the kernel trick to find separating hyperplanes in higher dimensional space
-
 
 
 svm = SVC(kernel='rbf', random_state=1, gamma=0.10, C=10.0)
@@ -558,7 +526,6 @@ plt.show()
 
 
 
-
 svm = SVC(kernel='rbf', random_state=1, gamma=0.2, C=1.0)
 svm.fit(X_train_std, y_train)
 
@@ -570,7 +537,6 @@ plt.legend(loc='upper left')
 plt.tight_layout()
 #plt.savefig('images/03_15.png', dpi=300)
 plt.show()
-
 
 
 
@@ -597,10 +563,7 @@ plt.show()
 
 
 
-
-
 # ## Maximizing information gain - getting the most bang for the buck
-
 
 
 
@@ -648,7 +611,6 @@ plt.show()
 
 
 
-
 tree = DecisionTreeClassifier(criterion='gini', 
                               max_depth=4, 
                               random_state=1)
@@ -665,7 +627,6 @@ plt.legend(loc='upper left')
 plt.tight_layout()
 #plt.savefig('images/03_20.png', dpi=300)
 plt.show()
-
 
 
 
@@ -688,9 +649,7 @@ graph.write_png('tree.png')
 
 
 
-
 # ## Combining weak to strong learners via random forests
-
 
 
 
@@ -713,8 +672,6 @@ plt.show()
 
 
 # # K-nearest neighbors - a lazy learning algorithm
-
-
 
 
 
@@ -745,6 +702,9 @@ plt.show()
 # ---
 # 
 # Readers may ignore the next cell.
+
+
+
 
 
 

@@ -32,7 +32,6 @@ from sklearn.decomposition import KernelPCA
 
 
 
-
 # *The use of `watermark` is optional. You can install this IPython extension via "`pip install watermark`". For more information, please see: https://github.com/rasbt/watermark.*
 
 
@@ -64,7 +63,6 @@ from sklearn.decomposition import KernelPCA
 
 
 
-
 # # Unsupervised dimensionality reduction via principal component analysis
 
 # ## The main steps behind principal component analysis
@@ -72,9 +70,7 @@ from sklearn.decomposition import KernelPCA
 
 
 
-
 # ## Extracting the principal components step-by-step
-
 
 
 
@@ -102,7 +98,6 @@ df_wine.head()
 
 
 
-
 X, y = df_wine.iloc[:, 1:].values, df_wine.iloc[:, 0].values
 
 X_train, X_test, y_train, y_test =     train_test_split(X, y, test_size=0.3, 
@@ -111,7 +106,6 @@ X_train, X_test, y_train, y_test =     train_test_split(X, y, test_size=0.3,
 
 
 # Standardizing the data.
-
 
 
 
@@ -167,7 +161,6 @@ X_test_std = sc.transform(X_test)
 # Eigendecomposition of the covariance matrix.
 
 
-
 cov_mat = np.cov(X_train_std.T)
 eigen_vals, eigen_vecs = np.linalg.eig(cov_mat)
 
@@ -185,11 +178,9 @@ print('\nEigenvalues \n%s' % eigen_vals)
 # ## Total and explained variance
 
 
-
 tot = sum(eigen_vals)
 var_exp = [(i / tot) for i in sorted(eigen_vals, reverse=True)]
 cum_var_exp = np.cumsum(var_exp)
-
 
 
 
@@ -211,14 +202,12 @@ plt.show()
 # ## Feature transformation
 
 
-
 # Make a list of (eigenvalue, eigenvector) tuples
 eigen_pairs = [(np.abs(eigen_vals[i]), eigen_vecs[:, i])
                for i in range(len(eigen_vals))]
 
 # Sort the (eigenvalue, eigenvector) tuples from high to low
 eigen_pairs.sort(key=lambda k: k[0], reverse=True)
-
 
 
 
@@ -239,9 +228,7 @@ print('Matrix W:\n', w)
 # $$\Sigma \cdot (-v) = -\Sigma v = -\lambda v = \lambda \cdot (-v).$$
 
 
-
 X_train_std[0].dot(w)
-
 
 
 
@@ -271,11 +258,9 @@ plt.show()
 
 
 
-
 pca = PCA()
 X_train_pca = pca.fit_transform(X_train_std)
 pca.explained_variance_ratio_
-
 
 
 
@@ -288,11 +273,9 @@ plt.show()
 
 
 
-
 pca = PCA(n_components=2)
 X_train_pca = pca.fit_transform(X_train_std)
 X_test_pca = pca.transform(X_test_std)
-
 
 
 
@@ -300,7 +283,6 @@ plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
 plt.xlabel('PC 1')
 plt.ylabel('PC 2')
 plt.show()
-
 
 
 
@@ -338,14 +320,12 @@ def plot_decision_regions(X, y, classifier, resolution=0.02):
 
 
 
-
 pca = PCA(n_components=2)
 X_train_pca = pca.fit_transform(X_train_std)
 X_test_pca = pca.transform(X_test_std)
 
 lr = LogisticRegression()
 lr = lr.fit(X_train_pca, y_train)
-
 
 
 
@@ -359,7 +339,6 @@ plt.show()
 
 
 
-
 plot_decision_regions(X_test_pca, y_test, classifier=lr)
 plt.xlabel('PC 1')
 plt.ylabel('PC 2')
@@ -367,7 +346,6 @@ plt.legend(loc='lower left')
 plt.tight_layout()
 # plt.savefig('images/05_05.png', dpi=300)
 plt.show()
-
 
 
 
@@ -384,14 +362,12 @@ pca.explained_variance_ratio_
 
 
 
-
 # ## The inner workings of linear discriminant analysis
 
 
 # ## Computing the scatter matrices
 
 # Calculate the mean vectors for each class:
-
 
 
 np.set_printoptions(precision=4)
@@ -403,7 +379,6 @@ for label in range(1, 4):
 
 
 # Compute the within-class scatter matrix:
-
 
 
 d = 13 # number of features
@@ -421,10 +396,8 @@ print('Within-class scatter matrix: %sx%s' % (S_W.shape[0], S_W.shape[1]))
 # Better: covariance matrix since classes are not equally distributed:
 
 
-
 print('Class label distribution: %s' 
       % np.bincount(y_train)[1:])
-
 
 
 
@@ -438,7 +411,6 @@ print('Scaled within-class scatter matrix: %sx%s' % (S_W.shape[0],
 
 
 # Compute the between-class scatter matrix:
-
 
 
 mean_overall = np.mean(X_train_std, axis=0)
@@ -459,7 +431,6 @@ print('Between-class scatter matrix: %sx%s' % (S_B.shape[0], S_B.shape[1]))
 # Solve the generalized eigenvalue problem for the matrix $S_W^{-1}S_B$:
 
 
-
 eigen_vals, eigen_vecs = np.linalg.eig(np.linalg.inv(S_W).dot(S_B))
 
 
@@ -471,7 +442,6 @@ eigen_vals, eigen_vecs = np.linalg.eig(np.linalg.inv(S_W).dot(S_B))
 # 
 
 # Sort eigenvectors in descending order of the eigenvalues:
-
 
 
 # Make a list of (eigenvalue, eigenvector) tuples
@@ -486,7 +456,6 @@ eigen_pairs = sorted(eigen_pairs, key=lambda k: k[0], reverse=True)
 print('Eigenvalues in descending order:\n')
 for eigen_val in eigen_pairs:
     print(eigen_val[0])
-
 
 
 
@@ -508,7 +477,6 @@ plt.show()
 
 
 
-
 w = np.hstack((eigen_pairs[0][1][:, np.newaxis].real,
               eigen_pairs[1][1][:, np.newaxis].real))
 print('Matrix W:\n', w)
@@ -516,7 +484,6 @@ print('Matrix W:\n', w)
 
 
 # ## Projecting samples onto the new feature space
-
 
 
 X_train_lda = X_train_std.dot(w)
@@ -541,10 +508,8 @@ plt.show()
 
 
 
-
 lda = LDA(n_components=2)
 X_train_lda = lda.fit_transform(X_train_std, y_train)
-
 
 
 
@@ -558,7 +523,6 @@ plt.legend(loc='lower left')
 plt.tight_layout()
 # plt.savefig('images/05_09.png', dpi=300)
 plt.show()
-
 
 
 
@@ -580,9 +544,7 @@ plt.show()
 
 
 
-
 # ## Implementing a kernel principal component analysis in Python
-
 
 
 
@@ -638,7 +600,6 @@ def rbf_kernel_pca(X, gamma, n_components):
 
 
 
-
 X, y = make_moons(n_samples=100, random_state=123)
 
 plt.scatter(X[y == 0, 0], X[y == 0, 1], color='red', marker='^', alpha=0.5)
@@ -647,7 +608,6 @@ plt.scatter(X[y == 1, 0], X[y == 1, 1], color='blue', marker='o', alpha=0.5)
 plt.tight_layout()
 # plt.savefig('images/05_12.png', dpi=300)
 plt.show()
-
 
 
 
@@ -676,7 +636,6 @@ ax[1].set_xlabel('PC1')
 plt.tight_layout()
 # plt.savefig('images/05_13.png', dpi=300)
 plt.show()
-
 
 
 
@@ -709,7 +668,6 @@ plt.show()
 
 
 
-
 X, y = make_circles(n_samples=1000, random_state=123, noise=0.1, factor=0.2)
 
 plt.scatter(X[y == 0, 0], X[y == 0, 1], color='red', marker='^', alpha=0.5)
@@ -718,7 +676,6 @@ plt.scatter(X[y == 1, 0], X[y == 1, 1], color='blue', marker='o', alpha=0.5)
 plt.tight_layout()
 # plt.savefig('images/05_15.png', dpi=300)
 plt.show()
-
 
 
 
@@ -749,7 +706,6 @@ plt.show()
 
 
 
-
 X_kpca = rbf_kernel_pca(X, gamma=15, n_components=2)
 
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(7, 3))
@@ -776,7 +732,6 @@ plt.show()
 
 
 # ## Projecting new data points
-
 
 
 
@@ -834,10 +789,8 @@ def rbf_kernel_pca(X, gamma, n_components):
 
 
 
-
 X, y = make_moons(n_samples=100, random_state=123)
 alphas, lambdas = rbf_kernel_pca(X, gamma=15, n_components=1)
-
 
 
 
@@ -846,10 +799,8 @@ x_new
 
 
 
-
 x_proj = alphas[25] # original projection
 x_proj
-
 
 
 
@@ -861,7 +812,6 @@ def project_x(x_new, X, gamma, alphas, lambdas):
 # projection of the "new" datapoint
 x_reproj = project_x(x_new, X, gamma=15, alphas=alphas, lambdas=lambdas)
 x_reproj 
-
 
 
 
@@ -882,7 +832,6 @@ plt.show()
 
 
 # ## Kernel principal component analysis in scikit-learn
-
 
 
 
@@ -910,7 +859,6 @@ plt.show()
 # ---
 # 
 # Readers may ignore the next cell.
-
 
 
 
